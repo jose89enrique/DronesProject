@@ -28,4 +28,6 @@ app.MapGet("/drones/ready", ()=>DroneDB.checkDronesReady());
 
 app.MapGet("/drones/battery/{serial}", (string serial)=>DroneDB.checkBatteryDrone(serial));
 
+DroneDB.startTime();
+
 app.Run();

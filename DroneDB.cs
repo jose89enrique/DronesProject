@@ -1,6 +1,6 @@
 namespace Drones.DB;
 using System.Linq;
-
+using System.Threading;
 
 public enum Model {Lightweight, Middleweight, Cruiserweight, Heavyweight};
 
@@ -54,7 +54,8 @@ public class DroneDB
     
     };
     
-    
+    private static Timer? timer=null;
+
     //Registering a drone
     public static object registerDrone(RegisterDrone newDrone)
     {    
@@ -182,6 +183,27 @@ public class DroneDB
             return droneM.batteryCapacity;
     }
 
-    
-    
+    //Start checking system for the battery level
+    public static void startTime()
+    {
+        timer=new Timer(new TimerCallback(checkBattery),null, 1000, 20000);        
+    }
+
+    public static void checkBattery(object? state)
+    {
+        Console.ForegroundColor= ConsoleColor.Yellow;        
+        Console.WriteLine("Report battery =>");
+        Console.ResetColor();
+        for(int i=0; i<_drones.Count(); i++)
+        {
+            if(_drones[i].batteryCapacity>=10)
+                _drones[i].batteryCapacity-=10;
+            else
+                _drones[i].batteryCapacity=0;
+             
+             Console.WriteLine(String.Format("Drone {0}: {1} %", _drones[i].SerialNumber, _drones[i].batteryCapacity));
+        }
+
+        Console.Beep();
+    }
 } 
